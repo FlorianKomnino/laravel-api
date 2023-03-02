@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController as DashboardController;
-use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProjectController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -28,10 +27,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('posts', PostController::class);
 });
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
