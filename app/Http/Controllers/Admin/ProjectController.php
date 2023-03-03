@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -20,7 +21,7 @@ class ProjectController extends Controller
         'content' => 'required|string|min:2|max:500',
         'topic' => 'required|string|min:2|max:100',
         'image' => 'required|image|max:256',
-        'type_id' => 'required|exists:types,id'
+        'type_id' => 'required|exists:types,id',
     ];
 
     protected $validationErrorMessages = [
@@ -84,6 +85,8 @@ class ProjectController extends Controller
         $newProject->project_date = now();
         $newProject->fill($data);
         $newProject->save();
+        $newProject->slug = Str::slug($newProject->name, '-') . $newProject->id;
+        $newProject->update();
         return redirect()->route('admin.projects.index')->with('message', "Il progetto '$newProject->title', è stato creato con successo.")->with('message_class', 'success');
     }
 
@@ -95,6 +98,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        dd($project);
         return view('admin.projects.show', compact('project'));
     }
 
