@@ -85,7 +85,7 @@ class ProjectController extends Controller
         $newProject->project_date = now();
         $newProject->fill($data);
         $newProject->save();
-        $newProject->slug = Str::slug($newProject->name, '-') . $newProject->id;
+        $newProject->slug = Str::slug($newProject->title, '-') . $newProject->id;
         $newProject->update();
         return redirect()->route('admin.projects.index')->with('message', "Il progetto '$newProject->title', è stato creato con successo.")->with('message_class', 'success');
     }
@@ -98,7 +98,6 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        dd($project);
         return view('admin.projects.show', compact('project'));
     }
 
@@ -136,6 +135,8 @@ class ProjectController extends Controller
 
         $project->project_date = now();
         $project->save();
+        $project->slug = Str::slug($project->title, '-') . $project->id;
+        $project->update();
         return redirect()->route('admin.projects.show', $project->id);
     }
 
