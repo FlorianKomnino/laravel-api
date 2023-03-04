@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Project as Project;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class ProjectController extends Controller
         'topic' => 'required|string|min:2|max:100',
         'image' => 'required|image|max:256',
         'type_id' => 'required|exists:types,id',
+        'technologies' => 'array|exists:technologies,id'
     ];
 
     protected $validationErrorMessages = [
@@ -41,6 +43,9 @@ class ProjectController extends Controller
         'image.required' => 'L\'immagine è necessaria.',
         'image.image' => 'Il file caricato deve essere un\'immagine.',
         'image.max' => 'L\'immagine è troppo grande. (max: 256kb)',
+
+        'thechnologies.array' => 'L\'elemento inserito non è un array',
+        'thechnologies.exists' => 'L\'elemento inserito non è valido'
     ];
 
     /**
@@ -64,7 +69,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create', ['project' => new Project(), 'types' => Type::all()]);
+        return view('admin.projects.create', ['project' => new Project(), 'types' => Type::all(), 'technologies' => Technology::all()]);
     }
 
     /**
@@ -85,7 +90,9 @@ class ProjectController extends Controller
         $newProject->project_date = now();
         $newProject->fill($data);
         $newProject->save();
-        $newProject->slug = Str::slug($newProject->title, '-') . $newProject->id;
+
+        $newProject->technologies()->sync($data['technologies']);
+        $newProject->slug = $newProject->id . '-' . Str::slug($newProject->title, '-');
         $newProject->update();
         return redirect()->route('admin.projects.index')->with('message', "Il progetto '$newProject->title', è stato creato con successo.")->with('message_class', 'success');
     }
@@ -109,7 +116,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', ['project' => $project, 'types' => Type::all()]);
+        return view('admin.projects.edit', ['project' => $project, 'types' => Type::all(), 'technologies' => Technology::all()]);
     }
 
     /**
@@ -135,7 +142,9 @@ class ProjectController extends Controller
 
         $project->project_date = now();
         $project->save();
-        $project->slug = Str::slug($project->title, '-') . $project->id;
+
+        $project->technologies()->sync($data['technologies']);
+        $project->slug = $project->id . '-' . Str::slug($project->title, '-');
         $project->update();
         return redirect()->route('admin.projects.show', $project->id);
     }

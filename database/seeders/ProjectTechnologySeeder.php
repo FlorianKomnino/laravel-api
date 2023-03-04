@@ -7,6 +7,7 @@ use App\Models\Technology;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
+use Illuminate\Support\Facades\DB;
 
 class ProjectTechnologySeeder extends Seeder
 {

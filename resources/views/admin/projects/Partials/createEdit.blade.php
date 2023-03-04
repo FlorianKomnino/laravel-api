@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="projectType" class="form-label">Project Title</label>
+                    <label for="projectType" class="form-label">Project's type</label>
 
                     <select class="form-control @error('type_id') is-invalid @enderror" name="type_id" id="projectType">
                     @foreach ($types as $projectType)
@@ -37,6 +37,22 @@
                         <div id="popup_message" data-type="warning" data-message="Check errors">{{$message}}</div>
                     </div>
                     @enderror
+                </div>
+
+
+                <div class="mb-3 tags d-flex align-items-center justify-content-between">
+                    @foreach ($technologies as $technology)
+                            <div class="single-tag d-flex align-items-center @error('technologies') border-danger bg-warning @enderror">
+                                <input type="checkbox" class="form-check-input" name="technologies[]" value="{{ $technology->id }}"
+                                @if ($errors->any())
+                                    @checked(in_array($technology->id, old('technologies',[])))
+                                @else
+                                    @checked($project->technologies->contains($technology->id))
+                                @endif
+                                >
+                                <label class="form-check-label ms-2">{{ $technology->name }}</label>
+                            </div>
+                    @endforeach
                 </div>
 
                 <div class="mb-3">
