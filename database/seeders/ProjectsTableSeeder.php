@@ -8,6 +8,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Generator as Faker;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectsTableSeeder extends Seeder
 {
@@ -23,11 +24,14 @@ class ProjectsTableSeeder extends Seeder
             $newProject->type_id = Type::inRandomOrder()->first()->id;
             $newProject->author = $faker->word();
             $newProject->title = $faker->sentence(5);
+
             $newProject->content = $faker->text(500);
             $newProject->topic = $faker->sentence(3);
             $newProject->project_date = $faker->dateTimeBetween('-1 year', 'today');
             $newProject->image = $faker->unique()->imageUrl();
             $newProject->save();
+            $newProject->slug = $newProject->id . '-' . Str::slug($newProject->title, '-');
+            $newProject->update();
         }
     }
 }
