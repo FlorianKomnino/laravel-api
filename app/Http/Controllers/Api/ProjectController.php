@@ -17,7 +17,7 @@ class ProjectController extends Controller
     {
         // $projects = Project::all();
 
-        $projects = Project::with('technologies')->orderBy('project_date', 'DESC')->paginate(25);
+        $projects = Project::with('technologies')->orderBy('project_date', 'DESC')->paginate(60);
 
         return response()->json([
             "success" => true,
