@@ -15,7 +15,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        // $projects = Project::all();
+
+        $projects = Project::with('technologies')->orderBy('project_date', 'DESC')->paginate(25);
 
         return response()->json([
             "success" => true,
@@ -47,12 +49,16 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Project $project
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Project $project)
     {
-        //
+        $post = Project::with('technologies')->findOrFail($project->id);
+        return response()->json([
+            'success' => true,
+            'results' => $project
+        ]);
     }
 
     /**
